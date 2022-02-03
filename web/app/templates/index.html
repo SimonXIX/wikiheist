@@ -1,0 +1,93 @@
+<!--
+# @name: index.html
+# @version: 0.1
+# @creation_date: 2022-02-02
+# @license: The MIT License <https://opensource.org/licenses/MIT>
+# @author: Simon Bowie <simon.bowie.19@gmail.com>
+# @purpose: Basic layout for homepage
+# @acknowledgements:
+# https://www.digitalocean.com/community/tutorials/how-to-make-a-web-application-using-flask-in-python-3
+# Bootstrap 5.1.3: https://getbootstrap.com/
+# Flask-Moment: https://flask-moment.readthedocs.io/en/latest/
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {{ moment.include_moment() }}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>WikiHeist</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="{{ url_for('static',filename='styles/custom.css') }}" rel="stylesheet">
+    <!-- Google font -->
+    <link href="https://fonts.googleapis.com/css?family=Oswald:300,400,700&display=swap" rel='stylesheet' type='text/css'>
+</head>
+<body class="bg-dark">
+  <header>
+      <div class="container-fluid bg-dark text-white">
+        <div class="d-flex justify-content-center p-20">
+          <h1 class="display-1 fst-italic">WikiHeist</h1>
+        </div>
+      </div>
+  </header>
+  <div class="container bg-dark text-white">
+    <div class="row">
+        <div class="col text-center pb-5 fs-2">
+            You are recruiting:
+        </div>
+    </div>
+    <div class="row">
+      {%for people in people%}
+        <div class="col pb-5">
+          <div class="card text-dark bg-light">
+            <h3 class="card-title text-center">
+              {{ people['personLabel']['value'] }}
+            </h3>
+            <div class="card-body text-center">
+              {{ people['personDescription']['value'] }}
+              <br><br>
+              <img src="{{ people['image']['value']}}" class="img-fluid">
+            </div>
+          </div>
+        </div>
+      {%endfor%}
+    </div>
+    <div class="row">
+      <div class="col text-center pb-5 fs-2">
+          to pull off a daring heist to steal:
+      </div>
+    </div>
+    <div class="row">
+      {%for art in art%}
+        <div class="d-flex justify-content-center pb-5">
+          <div class="card text-dark bg-light" style="width: 18rem;">
+            <h3 class="card-title text-center">
+              {{ art['artLabel']['value'] }}
+            </h3>
+            <div class="card-body text-center">
+              A {{ art['artDescription']['value'] }} in the {{ art['locationLabel']['value'] }}
+              <br><br>
+              <img src="{{ art['image']['value']}}" class="img-fluid">
+            </div>
+          </div>
+        </div>
+      {%endfor%}
+    </div>
+  </div>
+  <!-- Sticky footer-->
+  <footer class="footer py-3 mt-auto" style="background-color: #dcddde;">
+    <div class="container text-center">
+        <span class="text-muted">Based on an original idea by <a href="https://twitter.com/rossgsutherland">Ross Sutherland</a> in his <a href="https://www.imaginaryadvice.com/">Imaginary Advice</a> podcast.</span>
+        <span class="text-muted">All data retrieved from Wikidata is licensed as <a href="https://creativecommons.org/share-your-work/public-domain/cc0/">CC0 Public Domain</a>.</span>
+        <span class="text-muted">Code is © {{ moment().format('YYYY') }} <a href="https://simonxix.com">Simon Bowie</a>, is available at <a href="https://github.com/SimonXIX/wikiheist">https://github.com/SimonXIX/wikiheist</a>, and is licensed under the <a href="https://mit-license.org/">MIT License</a>.</span>
+    </div>
+  </footer>
+  <!-- JavaScript -->
+  <!-- jQuery first, then Popper JS, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+</body>
+</html>
