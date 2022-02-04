@@ -21,43 +21,35 @@ moment.init_app(app)
 @app.route('/')
 def index():
 
-    query = '''PREFIX wikibase: <http://wikiba.se/ontology#>
-PREFIX wd: <http://www.wikidata.org/entity/>
-PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-
-SELECT ?person ?personLabel ?personDescription ?image WHERE {
-  ?person wdt:P31 wd:Q5;
-    wdt:P27 wd:Q145;
-    wdt:P569 ?birth;
-    wdt:P18 ?image.
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-  FILTER(NOT EXISTS { ?person (wdt:P570|wdt:P509|wdt:P20) ?o. })
-  FILTER(EXISTS { ?person wdt:P18 ?o. })
-  FILTER(?birth >= "1922-01-01"^^xsd:dateTime)
+    query = '''SELECT ?person ?personLabel ?personDescription ?image WHERE {
+  { SELECT ?person ?image WHERE {
+    ?person wdt:P31 wd:Q5;
+      wdt:P27 wd:Q145;
+      wdt:P569 ?birth;
+      wdt:P18 ?image.
+      FILTER NOT EXISTS { ?person wdt:P570 ?o. }
+      FILTER(?birth >= "1922-01-01"^^xsd:dateTime)
+   }
+   ORDER BY (UUID())
+   LIMIT 6}
+   SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
 }
-ORDER BY (UUID())
-LIMIT 6
 '''
 
     url = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql'
     data = requests.get(url, params={'query': query, 'format': 'json'}).json()
     people = data['results']['bindings']
 
-    query = '''PREFIX wikibase: <http://wikiba.se/ontology#>
-PREFIX wd: <http://www.wikidata.org/entity/>
-PREFIX wdt: <http://www.wikidata.org/prop/direct/>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-
-SELECT ?art ?artLabel ?artDescription ?locationLabel ?image WHERE {
-  ?art wdt:P31 wd:Q838948.
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-  OPTIONAL { ?art wdt:P276 ?location. }
-  OPTIONAL { ?art wdt:P18 ?image. }
-  FILTER(EXISTS { ?art wdt:P18 ?o. })
+    query = '''SELECT ?art ?artLabel ?artDescription ?locationLabel ?image WHERE {
+  { SELECT ?art ?image WHERE {
+    ?art wdt:P31 wd:Q838948;
+      wdt:P18 ?image;
+   }
+   ORDER BY (UUID())
+   LIMIT 1  }
+   SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+   OPTIONAL { ?art wdt:P276 ?location. }
 }
-ORDER BY (UUID())
-LIMIT 1
 '''
 
     url = 'https://query.wikidata.org/bigdata/namespace/wdq/sparql'
